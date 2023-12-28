@@ -4,7 +4,7 @@ import random
 # Program constants
 WIDTH = 500
 HEIGHT = 500
-DELAY = 200
+DELAY = 120
 FOOD_SIZE = 10
 
 offsets = {
@@ -14,25 +14,27 @@ offsets = {
     "right": (20, 0)
 }
 
-def go_up():
-    global snake_direction
-    if snake_direction != "down":
-        snake_direction = "up"
+def bind_direction_keys():
+    screen.onkey(lambda: set_snake_direction("up"), "Up")
+    screen.onkey(lambda: set_snake_direction("down"), "Down")
+    screen.onkey(lambda: set_snake_direction("left"), "Left")
+    screen.onkey(lambda: set_snake_direction("right"), "Right")
 
-def go_down():
+def set_snake_direction(direction):
     global snake_direction
-    if snake_direction != "up":
-        snake_direction = "down"
-
-def go_left():
-    global snake_direction
-    if snake_direction != "right":
-        snake_direction = "left"
-
-def go_right():
-    global snake_direction
-    if snake_direction != "left":
-        snake_direction = "right"
+    if direction == "up":
+        if direction != "down":
+            snake_direction = "up"
+    if direction == "down":
+        if direction != "up":
+            snake_direction = "down"
+    if direction == "left":
+        if direction != "right":
+            snake_direction = "left"
+    if direction == "right":
+        if direction != "left":
+            snake_direction = "right"
+    
 
 # Move the snake
 def game_loop():
@@ -99,10 +101,7 @@ screen.tracer(0)
 
 # Event handling
 screen.listen()
-screen.onkey(go_up, "Up")
-screen.onkey(go_down, "Down")
-screen.onkey(go_left, "Left")
-screen.onkey(go_right, "Right")
+bind_direction_keys()
 
 # Create turtle
 stamper = turtle.Turtle()
