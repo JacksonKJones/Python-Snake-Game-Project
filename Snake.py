@@ -4,7 +4,7 @@ import random
 # Program constants
 WIDTH = 500
 HEIGHT = 500
-DELAY = 300
+DELAY = 200
 FOOD_SIZE = 10
 
 offsets = {
@@ -56,14 +56,16 @@ def game_loop():
             stamper.goto(segment[0], segment[1])
             stamper.stamp()
     
+    screen.title(f"Snake Game ||| Score: {score}")
     screen.update()
 
     turtle.ontimer(game_loop, DELAY)
 
 # checks food collision
 def food_collision():
-    global food_pos
+    global food_pos, score
     if get_distance(snake[-1], food_pos) < 20:
+        score += 1
         food_pos = get_random_food_pos()
         food.goto(food_pos)
         return True
@@ -83,7 +85,6 @@ def get_distance(pos1, pos2):
 # Drawing window
 screen = turtle.Screen()
 screen.setup(WIDTH, HEIGHT)
-screen.title("Snake")
 screen.bgcolor("pink")
 screen.tracer(0)
 
@@ -104,6 +105,7 @@ stamper.penup()
 # Create snake as list
 snake = [[0, 0], [20, 0], [40, 0], [60, 0]]
 snake_direction = "up"
+score = 0
 
 # Draw snake
 for segment in snake:
@@ -113,6 +115,7 @@ for segment in snake:
 # Draw food
 food = turtle.Turtle()
 food.shape("circle")
+food.color("red")
 food.shapesize(FOOD_SIZE / 20)
 food.penup()
 food_pos = get_random_food_pos()
