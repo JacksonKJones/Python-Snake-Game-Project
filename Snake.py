@@ -19,12 +19,12 @@ def bind_keys():
     screen.onkey(lambda: set_snake_direction("down"), "Down")
     screen.onkey(lambda: set_snake_direction("left"), "Left")
     screen.onkey(lambda: set_snake_direction("right"), "Right")
-    screen.onkey(toggle_pause, "space")
+    # screen.onkey(toggle_pause, "space")
 
-def toggle_pause():
+'''def toggle_pause():
     global is_paused
     is_paused = not is_paused
-    return is_paused
+    return is_paused'''
 
 def set_snake_direction(direction):
     global snake_direction
@@ -70,11 +70,11 @@ def game_loop():
     
         screen.title(f"Snake Game ||| Score: {score} ||| High Score: {high_score}")
         
-        while True:
+        '''while True:
             if not is_paused:
                 x = 0
-            else:
-                screen.update()
+            else:'''
+        screen.update()
 
         turtle.ontimer(game_loop, DELAY)
         
@@ -131,7 +131,7 @@ def update_high_score():
 
 # Drawing window
 screen = turtle.Screen()
-is_paused = False
+# is_paused = False
 screen.setup(WIDTH, HEIGHT)
 screen.bgcolor("pink")
 screen.tracer(0)
