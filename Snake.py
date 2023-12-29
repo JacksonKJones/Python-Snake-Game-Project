@@ -14,11 +14,17 @@ offsets = {
     "right": (20, 0)
 }
 
-def bind_direction_keys():
+def bind_keys():
     screen.onkey(lambda: set_snake_direction("up"), "Up")
     screen.onkey(lambda: set_snake_direction("down"), "Down")
     screen.onkey(lambda: set_snake_direction("left"), "Left")
     screen.onkey(lambda: set_snake_direction("right"), "Right")
+    screen.onkey(toggle_pause, "space")
+
+def toggle_pause():
+    global is_paused
+    is_paused = not is_paused
+    return is_paused
 
 def set_snake_direction(direction):
     global snake_direction
@@ -34,7 +40,6 @@ def set_snake_direction(direction):
     if direction == "right":
         if snake_direction != "left":
             snake_direction = "right"
-    
 
 # Move the snake
 def game_loop():
@@ -64,9 +69,15 @@ def game_loop():
             stamper.color("black")
     
         screen.title(f"Snake Game ||| Score: {score} ||| High Score: {high_score}")
-        screen.update()
+        
+        while True:
+            if not is_paused:
+                x = 0
+            else:
+                screen.update()
 
         turtle.ontimer(game_loop, DELAY)
+        
 
 # checks food collision
 def food_collision():
@@ -120,13 +131,14 @@ def update_high_score():
 
 # Drawing window
 screen = turtle.Screen()
+is_paused = False
 screen.setup(WIDTH, HEIGHT)
 screen.bgcolor("pink")
 screen.tracer(0)
 
 # Event handling
 screen.listen()
-bind_direction_keys()
+bind_keys()
 
 # Create turtle
 stamper = turtle.Turtle()
