@@ -5,7 +5,7 @@ import random
 WIDTH = 500
 HEIGHT = 500
 DELAY = 120
-FOOD_SIZE = 10
+FOOD_SIZE = 20
 
 offsets = {
     "up": (0, 20),
@@ -23,16 +23,16 @@ def bind_direction_keys():
 def set_snake_direction(direction):
     global snake_direction
     if direction == "up":
-        if direction != "down":
+        if snake_direction != "down":
             snake_direction = "up"
     if direction == "down":
-        if direction != "up":
+        if snake_direction != "up":
             snake_direction = "down"
     if direction == "left":
-        if direction != "right":
+        if snake_direction != "right":
             snake_direction = "left"
     if direction == "right":
-        if direction != "left":
+        if snake_direction != "left":
             snake_direction = "right"
     
 
@@ -53,10 +53,15 @@ def game_loop():
 
         if not food_collision():
             snake.pop(0)
-
+        
+        count = len(snake)-1
         for segment in snake:
             stamper.goto(segment[0], segment[1])
+            count -= 1
+            if count < new_score:
+                stamper.color("green")
             stamper.stamp()
+            stamper.color("black")
     
         screen.title(f"Snake Game ||| Score: {score} ||| High Score: {high_score}")
         screen.update()
@@ -68,9 +73,7 @@ def food_collision():
     global food_pos, score, high_score
     if get_distance(snake[-1], food_pos) < 20:
         score += 1
-        if high_score < score:
-            high_score = score
-            stamper.color("green")
+        update_high_score()
         food_pos = get_random_food_pos()
         food.goto(food_pos)
         return True
@@ -88,14 +91,32 @@ def get_distance(pos1, pos2):
     return distance
 
 def reset():
-    global score, snake, snake_direction, food_pos
+    global score, new_score, snake, snake_direction, food_pos
     stamper.color("black")
     score = 0
+    new_score = 0
     snake = [[0, 0], [20, 0], [40, 0], [60, 0]]
     snake_direction = "up"
     food_pos = get_random_food_pos()
     food.goto(food_pos)
     game_loop()
+
+high_score = 0
+new_score = 0
+
+try:
+    with open("high_score.txt", "r") as file:
+        high_score = int(file.read())
+except FileNotFoundError:
+    pass
+
+def update_high_score():
+    global high_score, new_score
+    if score > high_score:
+        high_score = score
+        new_score += 1
+        with open("high_score.txt", "w") as file:
+            file.write(str(high_score))
 
 # Drawing window
 screen = turtle.Screen()
@@ -119,7 +140,6 @@ food.color("red")
 food.shapesize(FOOD_SIZE / 20)
 food.penup()
 
-high_score = 0
 reset()
 
 turtle.done()
